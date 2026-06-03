@@ -1,3 +1,46 @@
+// LIQUID GLASS PILL NAV — sliding indicator
+function movePillIndicator(activeLink) {
+  const indicator = document.querySelector('.pill-indicator');
+  const nav = document.querySelector('.pill-nav');
+  if (!indicator || !activeLink || !nav) return;
+  const navRect = nav.getBoundingClientRect();
+  const linkRect = activeLink.getBoundingClientRect();
+  indicator.style.left = (linkRect.left - navRect.left) + 'px';
+  indicator.style.width = linkRect.width + 'px';
+}
+
+// Set active pill on scroll
+const sections = ['home','about','demo','team','blog','faq','careers','contact'];
+window.addEventListener('scroll', () => {
+  let current = 'home';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) current = id;
+  });
+  document.querySelectorAll('.pill-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.dataset.section === current) {
+      link.classList.add('active');
+      movePillIndicator(link);
+    }
+  });
+});
+
+// Move indicator on click
+document.querySelectorAll('.pill-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelectorAll('.pill-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    movePillIndicator(link);
+  });
+});
+
+// Init indicator position on load
+window.addEventListener('load', () => {
+  const firstActive = document.querySelector('.pill-link.active');
+  movePillIndicator(firstActive);
+});
+
 // Filter buttons
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
